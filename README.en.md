@@ -8,6 +8,25 @@ Your files **are never uploaded to any server**. Total privacy is guaranteed by 
 
 ---
 
+## Screenshots and Visual Walkthrough
+
+### 1. Main Screen & Dropzone
+Clean, distraction-free interface with instant drag-and-drop file ingestion, privacy indicators, and batch upload support.
+
+![Neofile - Main Screen](docs/assets/neofile_hero_home.png)
+
+### 2. Batch Conversion Queue
+Concurrent processing with state-locked target selectors, real-time progress indicators, and individual or ZIP bundle downloads.
+
+![Neofile - Batch Conversion Queue](docs/assets/neofile_conversion_queue.png)
+
+### 3. Format Compatibility Explorer
+Interactive lookup to explore valid conversion routes and compatible output formats across 100+ file extensions.
+
+![Neofile - Format Compatibility Explorer](docs/assets/neofile_matrix_explorer.png)
+
+---
+
 ## Key Highlights
 
 - **Absolute Privacy (Zero-Server)**: No backend receives files. Zero bytes transmitted to external networks.

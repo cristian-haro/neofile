@@ -89,3 +89,11 @@ flowchart TD
 ## 4. Presentation Layer (`src/presentation/`)
 - Implements the primary driving adapter via React 19 and Tailwind CSS.
 - Completely isolated from file processing mechanics through React Context and Custom Hooks.
+
+### User Interface Preview
+![Neofile Main Interface](assets/neofile_hero_home.png)
+*Figure 1: Main Dropzone and Hero Interface (Zero-Server Guarantee)*
+
+![Neofile Queue](assets/neofile_conversion_queue.png)
+*Figure 2: Active Batch Conversion Queue with locked format selectors and real-time state management*
+

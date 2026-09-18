@@ -8,6 +8,25 @@ Tus archivos **nunca se suben a ningún servidor**. La privacidad es absoluta y 
 
 ---
 
+## Capturas de Pantalla y Vista Previa
+
+### 1. Pantalla Principal y Zona de Carga
+Interface minimalista y limpia con selector de arrastrar y soltar, estadísticas de privacidad y soporte multitarea.
+
+![Neofile - Pantalla Principal](docs/assets/neofile_hero_home.png)
+
+### 2. Cola de Conversión por Lotes
+Gestión simultánea de conversiones con bloqueo de selector tras procesar, control de progreso individual y descargas automáticas (incluyendo paquetes ZIP para PDFs multipágina).
+
+![Neofile - Cola de Conversión por Lotes](docs/assets/neofile_conversion_queue.png)
+
+### 3. Explorador de Compatibilidad de Formatos
+Buscador interactivo para consultar todas las combinaciones y rutas de conversión disponibles entre más de 100 formatos.
+
+![Neofile - Explorador de Compatibilidad](docs/assets/neofile_matrix_explorer.png)
+
+---
+
 ## Características Principales
 
 - **Privacidad Total (Zero-Server)**: Sin backend que reciba archivos. Cero bytes transmitidos a servidores externos.

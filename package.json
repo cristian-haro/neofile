@@ -11,6 +11,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "oxlint",
+    "screenshots": "tsx scripts/take-screenshots.ts",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -38,6 +39,7 @@
     "happy-dom": "^20.14.5",
     "jsdom": "^30.1.0",
     "oxlint": "^1.81.0",
+    "puppeteer-core": "^25.11.0",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.13",
     "typescript": "~6.0.2",
