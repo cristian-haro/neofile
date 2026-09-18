@@ -4,19 +4,21 @@ import { FormatCategory } from '../../../core/domain/entities/Format';
 import { ArchiveEngineAdapter } from './ArchiveEngineAdapter';
 import * as XLSX from 'xlsx';
 import { jsPDF } from 'jspdf';
-import { Document, Paragraph, TextRun, Packer, HeadingLevel } from 'docx';
+import { Document, Paragraph, TextRun, ImageRun, Packer, HeadingLevel } from 'docx';
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Configure PDF.js worker using standard ESM URL compatible with Vite and Node
+// Configure PDF.js worker
 try {
   if (typeof window !== 'undefined' && (pdfjsLib as any).GlobalWorkerOptions) {
     (pdfjsLib as any).GlobalWorkerOptions.workerSrc = new URL(
-      'pdfjs-dist/build/pdf.worker.mjs',
+      'pdfjs-dist/build/pdf.worker.min.mjs',
       import.meta.url
     ).toString();
   }
 } catch {
-  // Fallback for isolated environments
+  if (typeof window !== 'undefined' && (pdfjsLib as any).GlobalWorkerOptions) {
+    (pdfjsLib as any).GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
+  }
 }
 
 export class DocumentEngineAdapter implements IConversionEngine {
@@ -61,7 +63,7 @@ export class DocumentEngineAdapter implements IConversionEngine {
 
     onProgress(15, 'reading', 'Reading document content into memory buffer...');
 
-    // 1. PDF conversions (PDF -> DOCX, TXT, PNG, JPG, WEBP)
+    // 1. PDF conversions (PDF -> DOCX, DOC, TXT, PNG, JPG, WEBP)
     if (s === 'pdf') {
       return this.handlePdfConversion(sourceFile, t, onProgress);
     }
@@ -87,32 +89,167 @@ export class DocumentEngineAdapter implements IConversionEngine {
       return this.handlePdfToImages(file, buffer, targetExt, onProgress);
     }
 
-    // Case B: PDF to Word (DOCX / DOC) or Plain Text (TXT)
-    onProgress(35, 'parsing', 'Extracting text and structured paragraphs from PDF...');
-    const pagesText = await this.extractStructuredTextFromPdf(buffer);
+    // Case B: PDF to Word (DOCX / DOC)
+    if (targetExt === 'docx' || targetExt === 'doc') {
+      return this.handlePdfToWord(file, buffer, onProgress);
+    }
 
+    // Case C: PDF to Plain Text (TXT)
     if (targetExt === 'txt') {
+      onProgress(35, 'parsing', 'Extracting plain text from PDF...');
+      const pagesText = await this.extractStructuredTextFromPdf(buffer);
       const fullText = pagesText.map(lines => lines.join('\n')).join('\n\n--- Page Break ---\n\n');
       onProgress(100, 'ready', 'Extracted plain text');
       return new Blob([fullText], { type: 'text/plain;charset=utf-8;' });
     }
 
-    if (targetExt === 'docx' || targetExt === 'doc') {
-      onProgress(70, 'building_docx', 'Constructing Microsoft Word document...');
-      const docxBlob = await this.buildDocxFromPages(file.name.replace(/\.pdf$/i, ''), pagesText);
-      onProgress(100, 'ready', 'Word document ready');
-      return docxBlob;
-    }
-
+    // Case D: PDF to JSON
     if (targetExt === 'json') {
+      const pagesText = await this.extractStructuredTextFromPdf(buffer);
       const flatLines = pagesText.flat();
       return new Blob([JSON.stringify({ fileName: file.name, pageCount: pagesText.length, lines: flatLines }, null, 2)], {
         type: 'application/json'
       });
     }
 
+    const pagesText = await this.extractStructuredTextFromPdf(buffer);
     const flatText = pagesText.map(lines => lines.join('\n')).join('\n');
     return new Blob([flatText], { type: 'text/plain;charset=utf-8;' });
+  }
+
+  private async handlePdfToWord(
+    file: File,
+    buffer: ArrayBuffer,
+    onProgress: ProgressCallback
+  ): Promise<EngineConversionResult> {
+    onProgress(30, 'loading_pdf', 'Loading PDF document structure...');
+
+    try {
+      const copy = buffer.slice(0);
+      const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(copy) });
+      const pdfDoc = await loadingTask.promise;
+      const numPages = pdfDoc.numPages;
+      const docChildren: Paragraph[] = [
+        new Paragraph({
+          text: file.name.replace(/\.pdf$/i, ''),
+          heading: HeadingLevel.HEADING_1,
+          spacing: { after: 200 }
+        })
+      ];
+
+      for (let i = 1; i <= numPages; i++) {
+        onProgress(
+          Math.round(30 + (i / numPages) * 55),
+          'converting_page',
+          `Processing page ${i} of ${numPages}...`
+        );
+
+        const page = await pdfDoc.getPage(i);
+        const textContent = await page.getTextContent();
+        const lines: string[] = [];
+        let currentLine = '';
+        let lastY: number | null = null;
+
+        for (const item of textContent.items as any[]) {
+          if (item.str !== undefined) {
+            const y = item.transform ? item.transform[5] : null;
+            if (lastY !== null && y !== null && Math.abs(y - lastY) > 5) {
+              if (currentLine.trim()) lines.push(currentLine.trim());
+              currentLine = item.str;
+            } else {
+              currentLine += (currentLine ? ' ' : '') + item.str;
+            }
+            lastY = y;
+          }
+        }
+        if (currentLine.trim()) lines.push(currentLine.trim());
+
+        const pageText = lines.join('\n').trim();
+
+        if (pageText.length > 20) {
+          // Page contains readable text
+          if (i > 1) {
+            docChildren.push(new Paragraph({ children: [new TextRun({ text: '', break: 1 })] }));
+          }
+          for (const line of lines) {
+            if (line.trim()) {
+              docChildren.push(
+                new Paragraph({
+                  children: [new TextRun({ text: line, size: 22 })],
+                  spacing: { after: 100 }
+                })
+              );
+            }
+          }
+        } else if (typeof document !== 'undefined') {
+          // Scanned page or graphics: render canvas and embed high-quality image in Word
+          try {
+            const viewport = page.getViewport({ scale: 1.5 });
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.fillStyle = '#FFFFFF';
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              await page.render({ canvasContext: ctx, viewport } as any).promise;
+
+              const imgBlob = await new Promise<Blob | null>((res) => canvas.toBlob(res, 'image/jpeg', 0.88));
+              if (imgBlob) {
+                const imgBuffer = new Uint8Array(await imgBlob.arrayBuffer());
+                const widthPt = 520;
+                const heightPt = Math.round(520 * (viewport.height / viewport.width));
+
+                docChildren.push(
+                  new Paragraph({
+                    children: [
+                      new ImageRun({
+                        data: imgBuffer,
+                        transformation: { width: widthPt, height: heightPt },
+                        type: 'jpg'
+                      } as any)
+                    ],
+                    spacing: { after: 150 }
+                  })
+                );
+              }
+            }
+          } catch {
+            docChildren.push(
+              new Paragraph({
+                children: [new TextRun({ text: pageText || `[Page ${i}]`, size: 22 })]
+              })
+            );
+          }
+        }
+      }
+
+      onProgress(90, 'packaging_word', 'Encoding Word .docx OpenXML container...');
+      const wordDoc = new Document({
+        sections: [
+          {
+            properties: {},
+            children: docChildren
+          }
+        ]
+      });
+
+      const docxBlob = await Packer.toBlob(wordDoc);
+      onProgress(100, 'ready', 'Microsoft Word document ready');
+
+      return {
+        blob: docxBlob,
+        outputFileName: `${file.name.replace(/\.pdf$/i, '')}.docx`
+      };
+    } catch {
+      // Fallback text docx
+      const pages = await this.extractStructuredTextFromPdf(buffer);
+      const fallbackBlob = await this.buildDocxFromPages(file.name.replace(/\.pdf$/i, ''), pages);
+      return {
+        blob: fallbackBlob,
+        outputFileName: `${file.name.replace(/\.pdf$/i, '')}.docx`
+      };
+    }
   }
 
   private async handlePdfToImages(
@@ -239,23 +376,23 @@ export class DocumentEngineAdapter implements IConversionEngine {
           }
         }
         if (currentLine.trim()) lines.push(currentLine.trim());
-        pages.push(lines.length > 0 ? lines : ['[Empty Page or Scanned Image]']);
+        pages.push(lines.length > 0 ? lines : ['[Page text]']);
       }
 
-      if (pages.length > 0 && pages.some(p => p.length > 0 && p[0] !== '[Empty Page or Scanned Image]')) {
+      if (pages.length > 0 && pages.some(p => p.length > 0)) {
         return pages;
       }
     } catch {
       // Fallback below
     }
 
-    // 2. Binary fallback parser for text streams
+    // 2. Binary fallback parser for uncompressed text streams
     try {
       const copy = buffer.slice(0);
       const uint8 = new Uint8Array(copy);
       const rawString = new TextDecoder('latin1').decode(uint8);
       const textMatches = rawString.match(/\(([^\(\)\\]*(?:\\.[^\(\)\\]*)*)\)\s*Tj/g) || [];
-      
+
       if (textMatches.length > 0) {
         const lines = textMatches.map(m =>
           m.replace(/^\(/, '').replace(/\)\s*Tj$/, '').replace(/\\([()\\])/g, '$1').trim()
@@ -266,7 +403,7 @@ export class DocumentEngineAdapter implements IConversionEngine {
       // Ignore
     }
 
-    return [['Document content extracted from PDF file.']];
+    return [['Extracted document content.']];
   }
 
   private async buildDocxFromPages(title: string, pages: string[][]): Promise<Blob> {
