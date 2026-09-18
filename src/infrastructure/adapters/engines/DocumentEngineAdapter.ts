@@ -155,7 +155,7 @@ export class DocumentEngineAdapter implements IConversionEngine {
             ctx.fillRect(0, 0, canvas.width, canvas.height);
           }
 
-          await page.render({ canvasContext: ctx, viewport, canvas }).promise;
+          await page.render({ canvasContext: ctx, viewport } as any).promise;
 
           const mimeMap: Record<string, string> = {
             png: 'image/png',
