@@ -4,7 +4,11 @@ export const es = {
     subtitle: 'Conversor universal de archivos 100% privado en tu navegador',
     privacyBadge: 'Zero-Server Privacy',
     exploreMatrix: 'Ver Matriz de Formatos',
-    switchLanguage: 'English'
+    switchLanguage: 'English',
+    themeLight: 'Modo Claro',
+    themeDark: 'Modo Oscuro',
+    themeSystem: 'Tema del Sistema',
+    themeToggle: 'Cambiar Tema'
   },
   privacy: {
     title: 'Privacidad Absoluta Garantizada',
@@ -24,6 +28,7 @@ export const es = {
     convertAll: 'Convertir Todo',
     downloadAll: 'Descargar Todo (ZIP)',
     converting: 'Convirtiendo...',
+    batchTargetPlaceholder: 'Convertir todos a...',
     emptyTitle: 'No hay archivos en cola',
     emptySubtitle: 'Sube uno o más archivos para comenzar a convertirlos.'
   },
@@ -36,9 +41,13 @@ export const es = {
     statusCancelled: 'Cancelado',
     download: 'Descargar',
     retry: 'Reintentar',
+    reconvert: 'Cambiar formato',
+    reset: 'Reiniciar',
     remove: 'Eliminar',
     options: 'Ajustes',
-    detectedAs: 'Detectado como'
+    detectedAs: 'Detectado como',
+    sizeSaved: 'ahorro',
+    sizeIncreased: 'aumento'
   },
   optionsModal: {
     title: 'Ajustes de Conversión',

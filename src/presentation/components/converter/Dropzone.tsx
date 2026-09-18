@@ -47,13 +47,13 @@ export const Dropzone: React.FC = () => {
   };
 
   const categories = [
-    { name: 'Audio', icon: Music, color: 'text-amber-400 bg-amber-950/40 border-amber-800/40' },
-    { name: 'Video', icon: Video, color: 'text-rose-400 bg-rose-950/40 border-rose-800/40' },
-    { name: 'Image', icon: ImageIcon, color: 'text-purple-400 bg-purple-950/40 border-purple-800/40' },
-    { name: 'Document', icon: FileText, color: 'text-blue-400 bg-blue-950/40 border-blue-800/40' },
-    { name: 'e-Book', icon: BookOpen, color: 'text-emerald-400 bg-emerald-950/40 border-emerald-800/40' },
-    { name: 'Archive', icon: Archive, color: 'text-cyan-400 bg-cyan-950/40 border-cyan-800/40' },
-    { name: 'CAD', icon: Compass, color: 'text-orange-400 bg-orange-950/40 border-orange-800/40' },
+    { name: 'Audio', icon: Music, color: 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800/40' },
+    { name: 'Video', icon: Video, color: 'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800/40' },
+    { name: 'Image', icon: ImageIcon, color: 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40 border-purple-200 dark:border-purple-800/40' },
+    { name: 'Document', icon: FileText, color: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800/40' },
+    { name: 'e-Book', icon: BookOpen, color: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800/40' },
+    { name: 'Archive', icon: Archive, color: 'text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/40 border-cyan-200 dark:border-cyan-800/40' },
+    { name: 'CAD', icon: Compass, color: 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 border-orange-200 dark:border-orange-800/40' },
   ];
 
   return (
@@ -65,8 +65,8 @@ export const Dropzone: React.FC = () => {
         onClick={triggerFileInput}
         className={`relative group cursor-pointer border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center transition-all duration-200 ${
           isDragOver
-            ? 'border-blue-500 bg-blue-950/20 scale-[1.005]'
-            : 'border-slate-800 hover:border-slate-700 bg-slate-900/40 hover:bg-slate-900/60'
+            ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20 scale-[1.005]'
+            : 'border-slate-300 dark:border-slate-800 hover:border-blue-400 dark:hover:border-slate-700 bg-white/70 dark:bg-slate-900/40 hover:bg-white dark:hover:bg-slate-900/60 shadow-xs'
         }`}
       >
         <input
@@ -78,15 +78,15 @@ export const Dropzone: React.FC = () => {
         />
 
         <div className="flex flex-col items-center justify-center space-y-4">
-          <div className="w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400 group-hover:scale-105 group-hover:bg-blue-600/20 transition-all duration-200">
+          <div className="w-16 h-16 rounded-2xl bg-blue-600/10 dark:bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-105 group-hover:bg-blue-600/20 transition-all duration-200">
             <Upload className="w-8 h-8" />
           </div>
 
           <div>
-            <h2 className="text-lg font-semibold text-slate-100 mb-1">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-1">
               {t.dropzone.title}
             </h2>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               {t.dropzone.subtitle}
             </p>
           </div>
@@ -98,7 +98,7 @@ export const Dropzone: React.FC = () => {
               return (
                 <div
                   key={cat.name}
-                  className={`flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs border ${cat.color}`}
+                  className={`flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-medium border ${cat.color}`}
                 >
                   <Icon className="w-3.5 h-3.5" />
                   <span>{cat.name}</span>
@@ -107,7 +107,7 @@ export const Dropzone: React.FC = () => {
             })}
           </div>
 
-          <p className="text-xs text-slate-500 pt-2 font-mono">
+          <p className="text-xs text-slate-500 dark:text-slate-500 pt-2 font-mono">
             {t.dropzone.batchNotice}
           </p>
         </div>

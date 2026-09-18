@@ -239,6 +239,32 @@ async function runMasterTestSuite() {
     if (completed.progress.percentage !== 100) {
       throw new Error(`Expected 100% progress, got ${completed.progress.percentage}`);
     }
+
+    // Test Re-conversion / Reset Flow
+    job.reset();
+    if (job.status !== 'queued' || job.result !== undefined || job.progress.percentage !== 0) {
+      throw new Error('Reset failed to return job to clean queued state');
+    }
+    job.setTargetFormat(FormatRegistry.get('xlsx')!);
+    if (job.targetFormat.extension !== 'xlsx') {
+      throw new Error('Failed to set new target format after reset');
+    }
+  });
+
+  await runTest('Domain: UX & Utilities', 'should calculate format support and format byte sizes accurately', () => {
+    if (!ConversionMatrix.isConversionSupported('pdf', 'docx')) {
+      throw new Error('PDF to DOCX should be supported');
+    }
+    if (!ConversionMatrix.isConversionSupported('png', 'webp')) {
+      throw new Error('PNG to WEBP should be supported');
+    }
+    if (ConversionMatrix.isConversionSupported('mp3', 'dwg')) {
+      throw new Error('MP3 to DWG should not be supported');
+    }
+
+    if (FileItem.formatBytes(0) !== '0 B') throw new Error('0 B format mismatch');
+    if (FileItem.formatBytes(1024) !== '1 KB') throw new Error('1 KB format mismatch');
+    if (FileItem.formatBytes(1048576) !== '1 MB') throw new Error('1 MB format mismatch');
   });
 
   // --- SUMMARY ---

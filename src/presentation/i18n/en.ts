@@ -4,7 +4,11 @@ export const en = {
     subtitle: '100% Private In-Browser Universal File Conversion Engine',
     privacyBadge: 'Zero-Server Privacy',
     exploreMatrix: 'Explore Format Matrix',
-    switchLanguage: 'Español'
+    switchLanguage: 'Español',
+    themeLight: 'Light Mode',
+    themeDark: 'Dark Mode',
+    themeSystem: 'System Theme',
+    themeToggle: 'Toggle Theme'
   },
   privacy: {
     title: 'Absolute Privacy Guaranteed',
@@ -24,6 +28,7 @@ export const en = {
     convertAll: 'Convert All',
     downloadAll: 'Download All (ZIP)',
     converting: 'Converting...',
+    batchTargetPlaceholder: 'Convert all to...',
     emptyTitle: 'No files in queue',
     emptySubtitle: 'Drop or select files above to begin converting.'
   },
@@ -36,9 +41,13 @@ export const en = {
     statusCancelled: 'Cancelled',
     download: 'Download',
     retry: 'Retry',
+    reconvert: 'Change format',
+    reset: 'Reset',
     remove: 'Remove',
     options: 'Options',
-    detectedAs: 'Detected as'
+    detectedAs: 'Detected as',
+    sizeSaved: 'saved',
+    sizeIncreased: 'larger'
   },
   optionsModal: {
     title: 'Conversion Options',

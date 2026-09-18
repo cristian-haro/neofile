@@ -28,6 +28,8 @@ interface ConversionContextType {
   clearAllJobs: () => void;
   updateJobTarget: (jobId: string, targetExt: string) => void;
   updateJobOptions: (jobId: string, options: ConversionOptions) => void;
+  resetJob: (jobId: string) => void;
+  setBatchTarget: (targetExt: string) => void;
   convertSingleJob: (jobId: string) => Promise<void>;
   convertAllJobs: () => Promise<void>;
   downloadAllZip: () => Promise<void>;
@@ -132,6 +134,36 @@ export const ConversionProvider: React.FC<{ children: ReactNode }> = ({ children
     );
   };
 
+  const resetJob = (jobId: string) => {
+    setJobs(prev =>
+      prev.map(j => {
+        if (j.id === jobId) {
+          j.reset();
+          return Object.assign(Object.create(Object.getPrototypeOf(j)), j);
+        }
+        return j;
+      })
+    );
+  };
+
+  const setBatchTarget = (targetExt: string) => {
+    const targetDef = FormatRegistry.get(targetExt);
+    if (!targetDef) return;
+
+    setJobs(prev =>
+      prev.map(j => {
+        if (j.status === 'queued') {
+          const compatible = ConversionMatrix.isConversionSupported(j.sourceFile.rawExtension, targetExt);
+          if (compatible) {
+            j.setTargetFormat(targetDef);
+          }
+          return Object.assign(Object.create(Object.getPrototypeOf(j)), j);
+        }
+        return j;
+      })
+    );
+  };
+
   const convertSingleJob = async (jobId: string) => {
     const targetJob = jobs.find(j => j.id === jobId);
     if (!targetJob || targetJob.status === 'converting') return;
@@ -200,6 +232,8 @@ export const ConversionProvider: React.FC<{ children: ReactNode }> = ({ children
         clearAllJobs,
         updateJobTarget,
         updateJobOptions,
+        resetJob,
+        setBatchTarget,
         convertSingleJob,
         convertAllJobs,
         downloadAllZip,

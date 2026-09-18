@@ -94,6 +94,16 @@ export class ConversionJob {
     }
   }
 
+  reset(): void {
+    this.cleanup();
+    this.status = 'queued';
+    this.progress = { percentage: 0, stage: 'queued' };
+    this.result = undefined;
+    this.error = undefined;
+    this.startedAt = undefined;
+    this.completedAt = undefined;
+  }
+
   get durationMs(): number | undefined {
     if (this.startedAt && this.completedAt) {
       return this.completedAt.getTime() - this.startedAt.getTime();

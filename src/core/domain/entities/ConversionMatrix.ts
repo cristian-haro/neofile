@@ -115,6 +115,15 @@ export class ConversionMatrix {
   }
 
   /**
+   * Checks if a conversion from sourceExt to targetExt is supported.
+   */
+  static isConversionSupported(sourceExt: string, targetExt: string): boolean {
+    const targets = this.getCompatibleTargets(sourceExt);
+    const cleanTarget = targetExt.toLowerCase().replace(/^\./, '');
+    return targets.some(t => t.extension.toLowerCase() === cleanTarget);
+  }
+
+  /**
    * Total number of supported format pairs.
    */
   static getTotalConversionPairs(): number {
