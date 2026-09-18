@@ -2,8 +2,8 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { es } from '../i18n/es';
 import { en } from '../i18n/en';
 
-type Language = 'es' | 'en';
-type Translations = typeof es;
+export type Language = 'es' | 'en';
+export type Translations = typeof es;
 
 interface I18nContextType {
   language: Language;
@@ -14,11 +14,33 @@ interface I18nContextType {
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
+const LANGUAGE_STORAGE_KEY = 'neofile_language';
+
 export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('es');
+  const [language, setLanguageState] = useState<Language>(() => {
+    if (typeof window === 'undefined') return 'es';
+    const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language | null;
+    if (stored && (stored === 'es' || stored === 'en')) {
+      return stored;
+    }
+    // Check browser preference if no stored language
+    if (typeof navigator !== 'undefined' && navigator.language) {
+      return navigator.language.toLowerCase().startsWith('es') ? 'es' : 'en';
+    }
+    return 'es';
+  });
+
+  const setLanguage = (newLang: Language) => {
+    setLanguageState(newLang);
+    try {
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, newLang);
+    } catch {
+      // Ignore storage error
+    }
+  };
 
   const toggleLanguage = () => {
-    setLanguage(prev => (prev === 'es' ? 'en' : 'es'));
+    setLanguage(language === 'es' ? 'en' : 'es');
   };
 
   const t = language === 'es' ? es : en;

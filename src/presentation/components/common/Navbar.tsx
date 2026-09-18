@@ -1,7 +1,7 @@
 import React from 'react';
 import { useI18n } from '../../context/I18nContext';
 import { useTheme } from '../../context/ThemeContext';
-import { ShieldCheck, TableProperties, Globe, RefreshCw, Sun, Moon, Monitor } from 'lucide-react';
+import { ShieldCheck, TableProperties, RefreshCw, Sun, Moon, Monitor } from 'lucide-react';
 
 interface NavbarProps {
   currentView: 'converter' | 'matrix';
@@ -9,8 +9,8 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ currentView, onToggleView }) => {
-  const { t, language, toggleLanguage } = useI18n();
-  const { theme, resolvedTheme, toggleTheme } = useTheme();
+  const { t, language, setLanguage } = useI18n();
+  const { theme, toggleTheme } = useTheme();
 
   const getThemeIcon = () => {
     if (theme === 'system') return <Monitor className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />;
@@ -55,7 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onToggleView }) => 
             onClick={onToggleView}
             className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 border ${
               currentView === 'matrix'
-                ? 'bg-blue-600 border-blue-500 text-white shadow-sm shadow-blue-500/20'
+                ? 'bg-blue-600 border-blue-500 text-white shadow-xs'
                 : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
             }`}
           >
@@ -73,15 +73,31 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onToggleView }) => 
             <span className="hidden md:inline capitalize">{theme}</span>
           </button>
 
-          {/* Language Switcher */}
-          <button
-            onClick={toggleLanguage}
-            className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
-            title="Switch Language"
-          >
-            <Globe className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
-            <span className="uppercase">{language === 'es' ? 'EN' : 'ES'}</span>
-          </button>
+          {/* Language Segmented Selector */}
+          <div className="flex items-center rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-0.5 shadow-2xs">
+            <button
+              onClick={() => setLanguage('es')}
+              className={`px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-all ${
+                language === 'es'
+                  ? 'bg-blue-600 text-white shadow-xs font-bold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+              }`}
+              title="Español"
+            >
+              ES
+            </button>
+            <button
+              onClick={() => setLanguage('en')}
+              className={`px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-all ${
+                language === 'en'
+                  ? 'bg-blue-600 text-white shadow-xs font-bold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+              }`}
+              title="English"
+            >
+              EN
+            </button>
+          </div>
         </div>
       </div>
     </header>
