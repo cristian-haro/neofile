@@ -41,8 +41,8 @@ export class ConversionJob {
   }
 
   setTargetFormat(newTarget: FormatDefinition): void {
-    if (this.status === 'converting') {
-      throw new Error('Cannot change target format while conversion is in progress');
+    if (this.status === 'converting' || this.status === 'completed') {
+      throw new Error('Cannot change target format while conversion is in progress or completed');
     }
     this.targetFormat = newTarget;
   }

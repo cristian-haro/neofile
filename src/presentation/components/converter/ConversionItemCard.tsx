@@ -125,8 +125,8 @@ export const ConversionItemCard: React.FC<ConversionItemCardProps> = ({ job }) =
               <select
                 value={job.targetFormat.extension}
                 onChange={(e) => updateJobTarget(job.id, e.target.value)}
-                disabled={job.status === 'converting'}
-                className="bg-slate-950 border border-slate-700/80 text-slate-200 text-xs font-mono font-medium rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500 cursor-pointer disabled:opacity-50"
+                disabled={job.status === 'converting' || job.status === 'completed'}
+                className="bg-slate-950 border border-slate-700/80 text-slate-200 text-xs font-mono font-medium rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-900/60"
               >
                 {compatibleTargets.length > 0 ? (
                   compatibleTargets.map(target => (
@@ -146,8 +146,8 @@ export const ConversionItemCard: React.FC<ConversionItemCardProps> = ({ job }) =
             {job.sourceFile.format?.category === 'image' && (
               <button
                 onClick={() => setIsOptionsOpen(true)}
-                disabled={job.status === 'converting'}
-                className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800 text-xs transition-colors"
+                disabled={job.status === 'converting' || job.status === 'completed'}
+                className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800 text-xs transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 title={t.item.options}
               >
                 <Sliders className="w-4 h-4" />
