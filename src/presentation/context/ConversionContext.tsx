@@ -17,6 +17,7 @@ import { CADEngineAdapter } from '../../infrastructure/adapters/engines/CADEngin
 import { AudioVideoEngineAdapter } from '../../infrastructure/adapters/engines/AudioVideoEngineAdapter';
 import { EBookEngineAdapter } from '../../infrastructure/adapters/engines/EBookEngineAdapter';
 import { MagicNumberDetectorAdapter } from '../../infrastructure/adapters/detectors/MagicNumberDetectorAdapter';
+import { DataCodeEngineAdapter } from '../../infrastructure/adapters/engines/DataCodeEngineAdapter';
 import { LocalConsoleTelemetryAdapter } from '../../infrastructure/adapters/telemetry/LocalConsoleTelemetryAdapter';
 
 interface ConversionContextType {
@@ -49,6 +50,7 @@ export const ConversionProvider: React.FC<{ children: ReactNode }> = ({ children
     const detector = new MagicNumberDetectorAdapter();
 
     const router = new EngineRouterService([
+      new DataCodeEngineAdapter(),
       new ImageConversionAdapter(),
       new DocumentEngineAdapter(),
       new ArchiveEngineAdapter(),

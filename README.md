@@ -30,13 +30,16 @@ Buscador interactivo para consultar todas las combinaciones y rutas de conversi�
 ## Características Principales
 
 - **Privacidad Total (Zero-Server)**: Sin backend que reciba archivos. Cero bytes transmitidos a servidores externos.
-- **Más de 100 Formatos Soportados**: Cubre categorías completas de Audio, Video, Imágenes, Documentos, eBooks, Comprimidos y CAD.
+- **Más de 100 Formatos Soportados**: Cubre categorías completas de Audio, Video, Imágenes, Documentos, Datos estructurados, eBooks, Comprimidos y CAD.
+- **Motor de Datos y DevTools**: Transformación bidireccional instantánea entre `JSON`, `YAML`, `XML`, `CSV`, `TSV`, `SQL`, `Markdown`, `HTML`, `Excel` y codificación/decodificación `Base64`.
 - **Arquitectura Hexagonal**: Núcleo de dominio desacoplado de frameworks e implementaciones de motores de conversión.
-- **Procesamiento por Lotes**: Conversión simultánea con control de concurrencia y descarga individual o agrupada en ZIP.
+- **Procesamiento por Lotes**: Conversión simultánea con control de concurrencia, selector masivo común y descarga individual o en ZIP.
+- **Reconversión y Comparativa de Peso**: Posibilidad de cambiar el formato destino tras convertir y métricas de ahorro de tamaño.
+- **Selector de Tema Visual**: Modos Claro, Oscuro y Automático del Sistema.
 - **Detección Binaria**: Identificación de tipos de archivo mediante firmas *Magic Numbers* en lugar de basarse únicamente en la extensión.
 - **Zero Emoji Standard**: Diseño profesional, limpio y tipográfico con iconografía SVG estructurada (Lucide Icons).
-- **Internacionalización Bilingüe**: Soporte nativo para Español e Inglés con cambio dinámico en tiempo real.
-- **Batería de Testeo Doble**: Tests unitarios de dominio y suite de QA automático de integración.
+- **Internacionalización Bilingüe**: Soporte nativo para Español e Inglés con selector segmentado persistente.
+- **Batería de Testeo Doble**: Tests unitarios de dominio y suite de 20 tests automáticos de integración.
 
 ---
 
@@ -47,7 +50,7 @@ Buscador interactivo para consultar todas las combinaciones y rutas de conversi�
 | **Audio** | `3GA`, `AAC`, `AC3`, `AIFF`, `FLAC`, `M4A`, `M4R`, `MIDI`, `MP3`, `OGG`, `RA`, `RAM`, `WAV`, `WMA` |
 | **Video** | `3G2`, `3GP`, `3GPP`, `ASF`, `AVI`, `FLV`, `GVI`, `M4V`, `MKV`, `MOD`, `MOV`, `MP4`, `MPG`, `MTS`, `RM`, `RMVB`, `TS`, `VOB`, `WEBM`, `WMV` |
 | **Imágenes** | `AI`, `AVIF`, `BMP`, `CDR`, `EMF`, `GIF`, `HEIC`, `JFIF`, `JPG`, `JPEG`, `ODG`, `PCX`, `PNG`, `PSD`, `SVG`, `TGA`, `TIFF`, `WBMP`, `WEBP`, `WMF`, `ICO` |
-| **Documentos** | `CSV`, `DJVU`, `DOC`, `DOCM`, `DOCX`, `EML`, `EPS`, `HTML`, `JSON`, `MD`, `MSG`, `ODP`, `ODS`, `ODT`, `PDF`, `PPS`, `PPSX`, `PPT`, `PPTM`, `PPTX`, `PS`, `PUB`, `RTF`, `TEX`, `TXT`, `WKS`, `WPD`, `WPS`, `XLR`, `XLS`, `XLSM`, `XLSX`, `XPS` |
+| **Documentos & Datos** | `B64`, `CSV`, `DJVU`, `DOC`, `DOCM`, `DOCX`, `EML`, `EPS`, `HTML`, `JSON`, `MD`, `MSG`, `ODP`, `ODS`, `ODT`, `PDF`, `PPS`, `PPSX`, `PPT`, `PPTM`, `PPTX`, `PS`, `PUB`, `RTF`, `SQL`, `TEX`, `TSV`, `TXT`, `WKS`, `WPD`, `WPS`, `XLR`, `XLS`, `XLSM`, `XLSX`, `XML`, `XPS`, `YAML`, `YML` |
 | **e-Books** | `AZW`, `AZW3`, `CBC`, `CBR`, `CBZ`, `CHM`, `EPUB`, `FB2`, `LIT`, `LRF`, `MOBI`, `PDB`, `PML`, `PRC`, `RB`, `TCR` |
 | **Comprimidos**| `7Z`, `CAB`, `LZH`, `RAR`, `TAR`, `TAR.BZ2`, `TAR.GZ`, `YZ1`, `ZIP` |
 | **CAD** | `DWG`, `DXF` |

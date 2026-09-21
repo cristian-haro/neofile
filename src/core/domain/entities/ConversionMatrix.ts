@@ -67,26 +67,39 @@ export class ConversionMatrix {
       }
 
       case 'document': {
-        if (['csv', 'xls', 'xlsx', 'ods', 'xlsm', 'xlr', 'wks'].includes(ext)) {
+        if (['csv', 'tsv'].includes(ext)) {
+          // Tabular data
+          ['json', 'yaml', 'xml', 'xlsx', 'sql', 'md', 'html', 'pdf', 'csv', 'tsv', 'b64', 'txt'].forEach(t => addTarget(t, 'document'));
+        } else if (['xls', 'xlsx', 'ods', 'xlsm', 'xlr', 'wks'].includes(ext)) {
           // Spreadsheets
-          ['csv', 'xlsx', 'xls', 'ods', 'json', 'pdf', 'txt', 'html'].forEach(t => addTarget(t, 'document'));
+          ['csv', 'tsv', 'xlsx', 'xls', 'ods', 'json', 'yaml', 'xml', 'sql', 'md', 'html', 'pdf', 'txt'].forEach(t => addTarget(t, 'document'));
+        } else if (['json', 'yaml', 'yml', 'xml'].includes(ext)) {
+          // Structured data & configuration
+          ['json', 'yaml', 'xml', 'csv', 'tsv', 'sql', 'md', 'html', 'xlsx', 'b64', 'txt'].forEach(t => addTarget(t, 'document'));
+        } else if (['sql'].includes(ext)) {
+          // SQL scripts
+          ['json', 'yaml', 'csv', 'tsv', 'md', 'html', 'txt'].forEach(t => addTarget(t, 'document'));
+        } else if (['b64'].includes(ext)) {
+          // Base64 payloads
+          ['txt', 'json', 'xml', 'yaml', 'csv'].forEach(t => addTarget(t, 'document'));
         } else if (['md', 'txt', 'tex', 'rtf'].includes(ext)) {
           // Text & Markup
-          ['pdf', 'docx', 'txt', 'md', 'epub'].forEach(t => addTarget(t, 'document'));
+          ['pdf', 'docx', 'txt', 'md', 'html', 'b64', 'epub'].forEach(t => addTarget(t, 'document'));
+        } else if (['html'].includes(ext)) {
+          // HTML Markup
+          ['md', 'txt', 'pdf', 'docx', 'b64'].forEach(t => addTarget(t, 'document'));
         } else if (['doc', 'docx', 'odt', 'rtf', 'wps', 'wpd'].includes(ext)) {
           // Word processing
-          ['pdf', 'txt', 'md', 'docx'].forEach(t => addTarget(t, 'document'));
+          ['pdf', 'txt', 'md', 'docx', 'html'].forEach(t => addTarget(t, 'document'));
         } else if (['ppt', 'pptx', 'odp', 'pps', 'ppsx', 'pptm'].includes(ext)) {
           // Presentations
           ['pdf', 'txt'].forEach(t => addTarget(t, 'document'));
         } else if (ext === 'pdf') {
           // PDF to Word (.docx), plain text, and high-res images
           ['docx', 'txt', 'png', 'jpg', 'webp'].forEach(t => addTarget(t, 'document'));
-        } else if (ext === 'json') {
-          ['csv', 'xlsx', 'txt', 'pdf'].forEach(t => addTarget(t, 'document'));
         } else {
           // Generic document
-          ['pdf', 'txt'].forEach(t => addTarget(t, 'document'));
+          ['pdf', 'txt', 'b64'].forEach(t => addTarget(t, 'document'));
         }
         break;
       }

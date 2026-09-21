@@ -82,6 +82,12 @@ export const FORMAT_REGISTRY: Record<string, FormatDefinition> = {
   'xlsx': { extension: 'xlsx', name: 'XLSX', description: 'Microsoft Excel OpenXML Spreadsheet', category: 'document', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
   'xps': { extension: 'xps', name: 'XPS', description: 'Open XML Paper Specification', category: 'document', mimeType: 'application/oxps' },
   'json': { extension: 'json', name: 'JSON', description: 'JavaScript Object Notation Data', category: 'document', mimeType: 'application/json' },
+  'yaml': { extension: 'yaml', name: 'YAML', description: 'YAML Ain\'t Markup Language Structured Data', category: 'document', mimeType: 'application/x-yaml' },
+  'yml': { extension: 'yml', name: 'YML', description: 'YAML Structured Data File', category: 'document', mimeType: 'application/x-yaml' },
+  'xml': { extension: 'xml', name: 'XML', description: 'eXtensible Markup Language Document', category: 'document', mimeType: 'application/xml' },
+  'tsv': { extension: 'tsv', name: 'TSV', description: 'Tab Separated Values Table', category: 'document', mimeType: 'text/tab-separated-values' },
+  'sql': { extension: 'sql', name: 'SQL', description: 'SQL Data and Insert Statements', category: 'document', mimeType: 'application/sql' },
+  'b64': { extension: 'b64', name: 'B64', description: 'Base64 Encoded Binary/Text Payload', category: 'document', mimeType: 'text/plain' },
   'html': { extension: 'html', name: 'HTML', description: 'HyperText Markup Language', category: 'document', mimeType: 'text/html' },
 
   // --- E-BOOK ---

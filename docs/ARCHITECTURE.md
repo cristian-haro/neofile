@@ -38,11 +38,12 @@ flowchart TD
 
     subgraph Infrastructure ["Secondary / Driven Adapters (Infrastructure Layer)"]
         E1["ImageConversionAdapter (Canvas / WebGL)"]
-        E2["DocumentEngineAdapter (SheetJS / jsPDF)"]
-        E3["ArchiveEngineAdapter (fflate WASM)"]
-        E4["CADEngineAdapter (dxf-parser / SVG Vectorizer)"]
-        E5["AudioVideoEngineAdapter (Web Audio API / MediaStreams)"]
-        E6["EBookEngineAdapter (EPUB/CBZ Stream Reader)"]
+        E2["DocumentEngineAdapter (SheetJS / jsPDF / docx)"]
+        E3["DataCodeEngineAdapter (YAML / fast-xml-parser / SQL / Base64)"]
+        E4["ArchiveEngineAdapter (fflate WASM)"]
+        E5["CADEngineAdapter (dxf-parser / SVG Vectorizer)"]
+        E6["AudioVideoEngineAdapter (Web Audio API / MediaStreams)"]
+        E7["EBookEngineAdapter (EPUB/CBZ Stream Reader)"]
         D1["MagicNumberDetectorAdapter (Binary Headers)"]
         T1["LocalConsoleTelemetryAdapter"]
     end

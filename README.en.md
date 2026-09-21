@@ -30,13 +30,16 @@ Interactive lookup to explore valid conversion routes and compatible output form
 ## Key Highlights
 
 - **Absolute Privacy (Zero-Server)**: No backend receives files. Zero bytes transmitted to external networks.
-- **100+ Formats Supported**: Covers full categories of Audio, Video, Images, Documents, eBooks, Archives, and CAD.
+- **100+ Formats Supported**: Covers full categories of Audio, Video, Images, Structured Data, Documents, eBooks, Archives, and CAD.
+- **Data & DevTools Transformation Engine**: Instant bidirectional conversions between `JSON`, `YAML`, `XML`, `CSV`, `TSV`, `SQL`, `Markdown`, `HTML`, `Excel`, and `Base64` encode/decode.
 - **Hexagonal Architecture**: Pure domain core decoupled from UI frameworks and conversion engine adapters.
-- **Batch Processing**: Simultaneous conversions with concurrency management, per-item status, and ZIP bundling.
+- **Batch Processing**: Simultaneous conversions with concurrency management, common target selector, and ZIP bundling.
+- **Reconversion & Compression Ratio**: In-memory target switching without re-uploading and real-time size reduction metrics.
+- **Theme Selector**: Light, Dark, and System Auto modes.
 - **Binary Format Detection**: Identifies file types via binary *Magic Numbers* instead of relying solely on file extensions.
 - **Zero Emoji Standard**: Clean, professional typography with structured SVG iconography (Lucide Icons).
-- **Bilingual Internationalization**: Native English and Spanish support with instant runtime switching.
-- **Dual Test Strategy**: Domain unit tests alongside automated QA integration test suites.
+- **Bilingual Internationalization**: Native English and Spanish support with persistent segmented language selector.
+- **Dual Test Strategy**: Domain unit tests alongside automated QA integration test suite with 20 tests.
 
 ---
 
@@ -47,7 +50,7 @@ Interactive lookup to explore valid conversion routes and compatible output form
 | **Audio** | `3GA`, `AAC`, `AC3`, `AIFF`, `FLAC`, `M4A`, `M4R`, `MIDI`, `MP3`, `OGG`, `RA`, `RAM`, `WAV`, `WMA` |
 | **Video** | `3G2`, `3GP`, `3GPP`, `ASF`, `AVI`, `FLV`, `GVI`, `M4V`, `MKV`, `MOD`, `MOV`, `MP4`, `MPG`, `MTS`, `RM`, `RMVB`, `TS`, `VOB`, `WEBM`, `WMV` |
 | **Images** | `AI`, `AVIF`, `BMP`, `CDR`, `EMF`, `GIF`, `HEIC`, `JFIF`, `JPG`, `JPEG`, `ODG`, `PCX`, `PNG`, `PSD`, `SVG`, `TGA`, `TIFF`, `WBMP`, `WEBP`, `WMF`, `ICO` |
-| **Documents** | `CSV`, `DJVU`, `DOC`, `DOCM`, `DOCX`, `EML`, `EPS`, `HTML`, `JSON`, `MD`, `MSG`, `ODP`, `ODS`, `ODT`, `PDF`, `PPS`, `PPSX`, `PPT`, `PPTM`, `PPTX`, `PS`, `PUB`, `RTF`, `TEX`, `TXT`, `WKS`, `WPD`, `WPS`, `XLR`, `XLS`, `XLSM`, `XLSX`, `XPS` |
+| **Documents & Data** | `B64`, `CSV`, `DJVU`, `DOC`, `DOCM`, `DOCX`, `EML`, `EPS`, `HTML`, `JSON`, `MD`, `MSG`, `ODP`, `ODS`, `ODT`, `PDF`, `PPS`, `PPSX`, `PPT`, `PPTM`, `PPTX`, `PS`, `PUB`, `RTF`, `SQL`, `TEX`, `TSV`, `TXT`, `WKS`, `WPD`, `WPS`, `XLR`, `XLS`, `XLSM`, `XLSX`, `XML`, `XPS`, `YAML`, `YML` |
 | **e-Books** | `AZW`, `AZW3`, `CBC`, `CBR`, `CBZ`, `CHM`, `EPUB`, `FB2`, `LIT`, `LRF`, `MOBI`, `PDB`, `PML`, `PRC`, `RB`, `TCR` |
 | **Archives** | `7Z`, `CAB`, `LZH`, `RAR`, `TAR`, `TAR.BZ2`, `TAR.GZ`, `YZ1`, `ZIP` |
 | **CAD** | `DWG`, `DXF` |

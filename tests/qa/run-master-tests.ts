@@ -17,6 +17,7 @@ import { ArchiveEngineAdapter } from '../../src/infrastructure/adapters/engines/
 import { CADEngineAdapter } from '../../src/infrastructure/adapters/engines/CADEngineAdapter';
 import { AudioVideoEngineAdapter } from '../../src/infrastructure/adapters/engines/AudioVideoEngineAdapter';
 import { EBookEngineAdapter } from '../../src/infrastructure/adapters/engines/EBookEngineAdapter';
+import { DataCodeEngineAdapter } from '../../src/infrastructure/adapters/engines/DataCodeEngineAdapter';
 import { MagicNumberDetectorAdapter } from '../../src/infrastructure/adapters/detectors/MagicNumberDetectorAdapter';
 import { LocalConsoleTelemetryAdapter } from '../../src/infrastructure/adapters/telemetry/LocalConsoleTelemetryAdapter';
 
@@ -258,6 +259,12 @@ async function runMasterTestSuite() {
     if (!ConversionMatrix.isConversionSupported('png', 'webp')) {
       throw new Error('PNG to WEBP should be supported');
     }
+    if (!ConversionMatrix.isConversionSupported('json', 'yaml')) {
+      throw new Error('JSON to YAML should be supported');
+    }
+    if (!ConversionMatrix.isConversionSupported('csv', 'sql')) {
+      throw new Error('CSV to SQL should be supported');
+    }
     if (ConversionMatrix.isConversionSupported('mp3', 'dwg')) {
       throw new Error('MP3 to DWG should not be supported');
     }
@@ -265,6 +272,100 @@ async function runMasterTestSuite() {
     if (FileItem.formatBytes(0) !== '0 B') throw new Error('0 B format mismatch');
     if (FileItem.formatBytes(1024) !== '1 KB') throw new Error('1 KB format mismatch');
     if (FileItem.formatBytes(1048576) !== '1 MB') throw new Error('1 MB format mismatch');
+  });
+
+  // --- SUITE 8: QA Integration: Data & Code DevTools Engine ---
+  await runTest('QA: Data & Code Engine', 'should convert JSON data to structured YAML format', async () => {
+    const engine = new DataCodeEngineAdapter();
+    const jsonText = JSON.stringify({ project: 'Neofile', version: '2.0.0', features: ['zero-server', 'wasm'] });
+    const file = new File([jsonText], 'config.json', { type: 'application/json' });
+    const job = new ConversionJob(new FileItem(file, FormatRegistry.get('json')), FormatRegistry.get('yaml')!);
+
+    const result = await engine.convert(job, () => {});
+    const blob = result instanceof Blob ? result : result.blob;
+    const yamlOutput = await blob.text();
+    if (!yamlOutput.includes('project: Neofile') || !yamlOutput.includes('zero-server')) {
+      throw new Error(`JSON to YAML conversion mismatch:\n${yamlOutput}`);
+    }
+  });
+
+  await runTest('QA: Data & Code Engine', 'should convert YAML to formatted JSON', async () => {
+    const engine = new DataCodeEngineAdapter();
+    const yamlText = 'server:\n  port: 8080\n  enabled: true\n';
+    const file = new File([yamlText], 'server.yaml', { type: 'application/x-yaml' });
+    const job = new ConversionJob(new FileItem(file, FormatRegistry.get('yaml')), FormatRegistry.get('json')!);
+
+    const result = await engine.convert(job, () => {});
+    const blob = result instanceof Blob ? result : result.blob;
+    const jsonOutput = JSON.parse(await blob.text());
+    if (jsonOutput.server?.port !== 8080 || jsonOutput.server?.enabled !== true) {
+      throw new Error('YAML to JSON conversion failed to parse nested object');
+    }
+  });
+
+  await runTest('QA: Data & Code Engine', 'should convert JSON to valid XML', async () => {
+    const engine = new DataCodeEngineAdapter();
+    const jsonText = JSON.stringify({ user: { id: 101, name: 'Alice', role: 'admin' } });
+    const file = new File([jsonText], 'user.json', { type: 'application/json' });
+    const job = new ConversionJob(new FileItem(file, FormatRegistry.get('json')), FormatRegistry.get('xml')!);
+
+    const result = await engine.convert(job, () => {});
+    const blob = result instanceof Blob ? result : result.blob;
+    const xmlOutput = await blob.text();
+    if (!xmlOutput.includes('<user>') || !xmlOutput.includes('<name>Alice</name>')) {
+      throw new Error(`JSON to XML failed:\n${xmlOutput}`);
+    }
+  });
+
+  await runTest('QA: Data & Code Engine', 'should convert CSV to SQL CREATE TABLE and INSERT statements', async () => {
+    const engine = new DataCodeEngineAdapter();
+    const csvContent = 'id,name,role\n1,Carlos,Developer\n2,Elena,Designer';
+    const file = new File([csvContent], 'users.csv', { type: 'text/csv' });
+    const job = new ConversionJob(new FileItem(file, FormatRegistry.get('csv')), FormatRegistry.get('sql')!);
+
+    const result = await engine.convert(job, () => {});
+    const blob = result instanceof Blob ? result : result.blob;
+    const sqlOutput = await blob.text();
+    if (!sqlOutput.includes('CREATE TABLE') || !sqlOutput.includes('INSERT INTO `users`') || !sqlOutput.includes("'Carlos'")) {
+      throw new Error(`CSV to SQL generation failed:\n${sqlOutput}`);
+    }
+  });
+
+  await runTest('QA: Data & Code Engine', 'should convert tabular data to GitHub Markdown table', async () => {
+    const engine = new DataCodeEngineAdapter();
+    const csvContent = 'Format,Category,Lossless\nPNG,Image,true\nMP3,Audio,false';
+    const file = new File([csvContent], 'formats.csv', { type: 'text/csv' });
+    const job = new ConversionJob(new FileItem(file, FormatRegistry.get('csv')), FormatRegistry.get('md')!);
+
+    const result = await engine.convert(job, () => {});
+    const blob = result instanceof Blob ? result : result.blob;
+    const mdOutput = await blob.text();
+    if (!mdOutput.includes('| Format | Category | Lossless |') || !mdOutput.includes('| :--- |')) {
+      throw new Error(`CSV to Markdown table failed:\n${mdOutput}`);
+    }
+  });
+
+  await runTest('QA: Data & Code Engine', 'should encode text to Base64 and decode back (Roundtrip)', async () => {
+    const engine = new DataCodeEngineAdapter();
+    const originalText = 'Neofile Universal Client-Side Engine 2026';
+    const file = new File([originalText], 'secret.txt', { type: 'text/plain' });
+    
+    // Encode to B64
+    const jobEncode = new ConversionJob(new FileItem(file, FormatRegistry.get('txt')), FormatRegistry.get('b64')!);
+    const encodeRes = await engine.convert(jobEncode, () => {});
+    const encodeBlob = encodeRes instanceof Blob ? encodeRes : encodeRes.blob;
+    const b64Text = await encodeBlob.text();
+    
+    // Decode back to TXT
+    const b64File = new File([b64Text], 'secret.b64', { type: 'text/plain' });
+    const jobDecode = new ConversionJob(new FileItem(b64File, FormatRegistry.get('b64')), FormatRegistry.get('txt')!);
+    const decodeRes = await engine.convert(jobDecode, () => {});
+    const decodeBlob = decodeRes instanceof Blob ? decodeRes : decodeRes.blob;
+    const decodedText = await decodeBlob.text();
+
+    if (decodedText !== originalText) {
+      throw new Error(`Base64 roundtrip failed: expected "${originalText}", got "${decodedText}"`);
+    }
   });
 
   // --- SUMMARY ---
