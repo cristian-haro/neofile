@@ -1,0 +1,9 @@
+services:
+  neofile:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: neofile-converter
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
