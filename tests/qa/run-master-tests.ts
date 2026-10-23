@@ -368,6 +368,53 @@ async function runMasterTestSuite() {
     }
   });
 
+  // --- SUITE 5: User Edge Cases & Error Resilience ---
+  await runTest('QA: User Edge Cases', 'should normalize uppercase and mixed-case file extensions gracefully', () => {
+    const uppercasePdf = FormatRegistry.get('PDF');
+    const mixedJson = FormatRegistry.get('jSoN');
+    const dottedCsv = FormatRegistry.get('.CSV');
+
+    if (!uppercasePdf || uppercasePdf.extension !== 'pdf') {
+      throw new Error('Failed to resolve uppercase PDF format');
+    }
+    if (!mixedJson || mixedJson.extension !== 'json') {
+      throw new Error('Failed to resolve mixed-case jSoN format');
+    }
+    if (!dottedCsv || dottedCsv.extension !== 'csv') {
+      throw new Error('Failed to resolve dotted .CSV format');
+    }
+  });
+
+  await runTest('QA: User Edge Cases', 'should safely intercept malformed JSON without crashing engine', async () => {
+    const engine = new DataCodeEngineAdapter();
+    const malformedJson = '{ "user": "broken", invalid }';
+    const file = new File([malformedJson], 'corrupted.json', { type: 'application/json' });
+    const job = new ConversionJob(new FileItem(file, FormatRegistry.get('json')), FormatRegistry.get('yaml')!);
+
+    let caught = false;
+    try {
+      await engine.convert(job, () => {});
+    } catch {
+      caught = true;
+    }
+
+    if (!caught) {
+      throw new Error('Expected engine to reject malformed JSON, but it succeeded silently');
+    }
+  });
+
+  await runTest('QA: User Edge Cases', 'should return undefined for unknown file extensions without throwing unhandled exceptions', () => {
+    const unknown = FormatRegistry.get('unknown_fake_format_99');
+    if (unknown !== undefined) {
+      throw new Error('Expected unknown extension to resolve to undefined');
+    }
+
+    const compatible = ConversionMatrix.getCompatibleTargets('unknown_fake_format_99');
+    if (compatible.length !== 0) {
+      throw new Error('Expected compatible targets for unknown format to be empty array');
+    }
+  });
+
   // --- SUMMARY ---
   console.log('\n===============================================================');
   const passedCount = results.filter(r => r.passed).length;
