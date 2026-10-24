@@ -1,7 +1,7 @@
 import React from 'react';
 import { useI18n } from '../../context/I18nContext';
 import { useTheme } from '../../context/ThemeContext';
-import { ShieldCheck, TableProperties, RefreshCw, Sun, Moon, Monitor } from 'lucide-react';
+import { ShieldCheck, TableProperties, Sun, Moon, Monitor } from 'lucide-react';
 
 interface NavbarProps {
   currentView: 'converter' | 'matrix';
@@ -29,8 +29,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onToggleView }) => 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand */}
         <div className="flex items-center space-x-3 cursor-pointer" onClick={() => currentView === 'matrix' && onToggleView()}>
-          <div className="w-9 h-9 rounded-lg bg-blue-600/10 dark:bg-blue-600/20 border border-blue-500/30 dark:border-blue-500/40 flex items-center justify-center text-blue-600 dark:text-blue-400">
-            <RefreshCw className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <div className="w-9 h-9 rounded-lg bg-blue-600/10 dark:bg-blue-600/20 border border-blue-500/30 dark:border-blue-500/40 flex items-center justify-center p-1 overflow-hidden">
+            <img src="/neofile.png" alt="Neofile Logo" className="w-full h-full object-contain" />
           </div>
           <div>
             <div className="flex items-center space-x-2">

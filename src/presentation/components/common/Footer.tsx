@@ -1,6 +1,6 @@
 import React from 'react';
 import { useI18n } from '../../context/I18nContext';
-import { ShieldCheck, RefreshCw } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const { t } = useI18n();
@@ -11,8 +11,8 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Brand & Tagline */}
         <div className="flex items-center space-x-3">
-          <div className="w-6 h-6 rounded-md bg-blue-600/10 dark:bg-blue-600/20 border border-blue-500/20 dark:border-blue-500/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
-            <RefreshCw className="w-3.5 h-3.5" />
+          <div className="w-6 h-6 rounded-md bg-blue-600/10 dark:bg-blue-600/20 border border-blue-500/20 dark:border-blue-500/30 flex items-center justify-center p-0.5 overflow-hidden">
+            <img src="/neofile.png" alt="Neofile Logo" className="w-full h-full object-contain" />
           </div>
           <span className="font-semibold text-slate-800 dark:text-slate-200 tracking-tight">Neofile</span>
           <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
